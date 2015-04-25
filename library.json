@@ -13,5 +13,6 @@
     "type": "git",
     "url": "https://github.com/thijse/Arduino-EEPROMEx.git"
   },
+  "exclude": "extras",
   "frameworks": "arduino"
 }
