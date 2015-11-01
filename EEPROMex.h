@@ -68,10 +68,10 @@ class EEPROMClassEx {
   };  
 
 	bool 	 isReady();
-	int 	 writtenBytess();
+	int 	 writtenBytes();
   void 	 setMemPool(int base, int memSize);
 	void   setMaxAllowedWrites(int allowedWrites);
-	int 	 getAddress(int noOfBytess);
+	int 	 getAddress(int noOfBytes);
     
 	uint8_t  read(int);	
 	bool 	   readBit(int, uint8_t);
@@ -203,7 +203,7 @@ private:
 	static int _nextAvailableaddress;	
 	static int _writeCounts;
 
-	bool checkWrite(int base,int noOfBytess);	
+	bool checkWrite(int base,int noOfBytes);	
 	bool isWriteOk(int address);
 	bool isReadOk(int address);
 };
