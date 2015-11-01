@@ -20,15 +20,6 @@
 #ifndef EEPROMEX_h
 #define EEPROMEX_h
 
-#if ARDUINO >= 100
-#include <Arduino.h> 
-#else
-#include <WProgram.h> 
-#endif
-#include <inttypes.h>
-#include <avr/eeprom.h>
-
-
 #define EEPROMSizeATmega168   512     
 #define EEPROMSizeATmega328   1024     
 #define EEPROMSizeATmega1280  4096     
@@ -57,43 +48,57 @@
 #define EEPROMSizeTeensy2pp   EEPROMSizeAT90USB1286
 #define EEPROMSizeTeensy3     EEPROMSizeMK20DX128
 #define EEPROMSizeTeensy31    EEPROMSizeMK20DX256
-class EEPROMClassEx
-{
-	  
+
+#include <EEPROM.h>
+
+class EEPROMClassEx {
+
   public:
-	EEPROMClassEx();
+
+/******************************************************************************
+ * Constructor
+ ******************************************************************************/
+
+  void begin(int memSize){
+    _base= 0;
+    _memSize= memSize;
+    _nextAvailableaddress= 0; 
+    _writeCounts =0;
+    EEPROM.begin(memSize);
+  };  
+
 	bool 	 isReady();
-	int 	 writtenBytes();
-    void 	 setMemPool(int base, int memSize);
-	void  	 setMaxAllowedWrites(int allowedWrites);
-	int 	 getAddress(int noOfBytes);
+	int 	 writtenBytess();
+  void 	 setMemPool(int base, int memSize);
+	void   setMaxAllowedWrites(int allowedWrites);
+	int 	 getAddress(int noOfBytess);
     
 	uint8_t  read(int);	
-	bool 	 readBit(int, byte);
+	bool 	   readBit(int, uint8_t);
 	uint8_t  readByte(int);
-    uint16_t readInt(int);
-    uint32_t readLong(int);
+  uint16_t readInt(int);
+  uint32_t readLong(int);
 	float    readFloat(int);
 	double   readDouble(int);
 			
-    bool     write(int, uint8_t);
+  bool   write(int, uint8_t);
 	bool 	 writeBit(int , uint8_t, bool);
-	bool     writeByte(int, uint8_t);
+	bool   writeByte(int, uint8_t);
 	bool 	 writeInt(int, uint16_t);
 	bool 	 writeLong(int, uint32_t);
 	bool 	 writeFloat(int, float);
 	bool 	 writeDouble(int, double);
 
-	bool     update(int, uint8_t);
+	bool   update(int, uint8_t);
 	bool 	 updateBit(int , uint8_t, bool);
-	bool     updateByte(int, uint8_t);
+	bool   updateBytes(int, uint8_t);
 	bool 	 updateInt(int, uint16_t);
 	bool 	 updateLong(int, uint32_t);
 	bool 	 updateFloat(int, float);
 	bool 	 updateDouble(int, double);
 
 	
-    // Use template for other data formats
+    // Use template for other readByte formats
 
 	/**
 	 * Template function to read  multiple items of any type of variable, such as structs
@@ -111,8 +116,17 @@ class EEPROMClassEx
 	 */	
 	template <class T> int readBlock(int address, const T& value)
 	{		
-		eeprom_read_block((void*)&value, (const void*)address, sizeof(value));
-		return sizeof(value);
+		//eeprom_read_block((void*)&value, (const void*)address, sizeof(value));
+  	union T_bytes {
+         T val;
+         uint8_t bytes[sizeof(value)];
+      } data;
+    for(int i=0; i<sizeof(value); i++){
+      data.bytes[i] = EEPROM.read(address+i);
+    }
+    memcpy((void*)&value, (void*)&data.bytes, sizeof(value));  	  
+    EEPROM.commit(); 
+		return sizeof(T);
 	}
 	
 	/**
@@ -133,7 +147,16 @@ class EEPROMClassEx
 	template <class T> int writeBlock(int address, const T& value)
 	{
 		if (!isWriteOk(address+sizeof(value))) return 0;
-		eeprom_write_block((void*)&value, (void*)address, sizeof(value));			  			  
+		//eeprom_write_block((void*)&value, (void*)address, sizeof(value));			  			  
+  	union T_bytes {
+         T val;
+         uint8_t  bytes[sizeof(value)];
+      } data;
+    data.val = value;
+    for(int i=0; i<sizeof(value); i++){
+    	EEPROM.write(address+i, data.bytes[i]);
+    }
+    EEPROM.commit();    	
 		return sizeof(value);
 	}
 	 
@@ -159,33 +182,33 @@ class EEPROMClassEx
 	{
 		int writeCount=0;
 		if (!isWriteOk(address+sizeof(value))) return 0;
-		const byte* bytePointer = (const byte*)(const void*)&value;
+		const uint8_t* BytesPointer = (const uint8_t*)(const void*)&value;
 		for (unsigned int i = 0; i < (unsigned int)sizeof(value); i++) {
-			if (read(address)!=*bytePointer) {
-				write(address, *bytePointer);
+			if (read(address)!=*BytesPointer) {
+				write(address, *BytesPointer);
 				writeCount++;		
 			}
 			address++;
-			bytePointer++;
+			BytesPointer++;
 		}
 		return writeCount;
 	}
 	
 	
-	
 private:
+
 	//Private variables
 	static int _base;
 	static int _memSize;
 	static int _nextAvailableaddress;	
 	static int _writeCounts;
-	int _allowedWrites;	
-	bool checkWrite(int base,int noOfBytes);	
+
+	bool checkWrite(int base,int noOfBytess);	
 	bool isWriteOk(int address);
 	bool isReadOk(int address);
 };
 
-extern EEPROMClassEx EEPROM;
+extern EEPROMClassEx EEPROMEx;
 
 #endif
 

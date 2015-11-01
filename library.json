@@ -1,11 +1,11 @@
 {
-  "name": "EEPROMEx",
+  "name": "SX_EEPROM",
   "keywords": "eeprom",
-  "description": "Extension of the standard Arduino EEPROM library for reading and writing basic types, structs, strings, arrays and more.",
+  "description": "Adaptation for the ESP8266 of the EEPROMex library from Thijs Elenbaas for reading and writing basic types, structs, strings, arrays and more.",
   "authors":
   [
     {
-      "name": "Thijs Elenbaas"
+      "name": "Thijs Elenbaas, adapted for ESP8266 by Luis F. Macedo"
     }
   ],
   "repository":
