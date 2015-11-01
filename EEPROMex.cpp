@@ -57,9 +57,9 @@ void EEPROMClassEx::setMemPool(int base, int memSize) {
 /**
  * Get a new starting address to write to. Adress is negative if not enough space is available
  */
-int EEPROMClassEx::getAddress(int noOfBytess){
+int EEPROMClassEx::getAddress(int noOfBytes){
 	int availableaddress   = _nextAvailableaddress;
-	_nextAvailableaddress += noOfBytess;
+	_nextAvailableaddress += noOfBytes;
 	return availableaddress;		
 }
  
