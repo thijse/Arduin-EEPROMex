@@ -144,7 +144,6 @@ class EEPROMClassEx
 	template <class T> int updateBlock(int address, const T value[], int items)
 	{
 		int writeCount=0;
-		if (!isWriteOk(address+items*sizeof(T))) return 0;
 		unsigned int i;
 		for (i = 0; i < (unsigned int)items; i++)
 			  writeCount+= updateBlock<T>(address+(i*sizeof(T)),value[i]);
@@ -158,7 +157,6 @@ class EEPROMClassEx
 	template <class T> int updateBlock(int address, const T& value)
 	{
 		int writeCount=0;
-		if (!isWriteOk(address+sizeof(value))) return 0;
 		const byte* bytePointer = (const byte*)(const void*)&value;
 		for (unsigned int i = 0; i < (unsigned int)sizeof(value); i++) {
 			if (read(address)!=*bytePointer) {
