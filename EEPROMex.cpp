@@ -27,7 +27,7 @@
  ******************************************************************************/
 
  #define _EEPROMEX_VERSION 1_0_0 // software version of this library
- //#define _EEPROMEX_DEBUG         // Enables logging of maximum of writes and out-of-memory
+ #define _EEPROMEX_DEBUG         // Enables logging of maximum of writes and out-of-memory
 /******************************************************************************
  * Constructors
  ******************************************************************************/
@@ -99,7 +99,14 @@ int EEPROMClassEx::getAddress(int noOfBytes){
  * Check if EEPROM memory is ready to be accessed
  */
 bool EEPROMClassEx::isReady() {
-	return eeprom_is_ready();
+	bool isReady = eeprom_is_ready();
+#ifdef _EEPROMEX_DEBUG
+	Serial.print("isReady() returns: "); Serial.println(isReady);
+	Serial.print("allowedWrites: "); Serial.println(_allowedWrites);
+#else
+	Serial.print("isReady() returns: "); Serial.println(isReady);
+#endif
+	return isReady;
 }
 
 /**
