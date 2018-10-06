@@ -74,6 +74,8 @@ void EEPROMClassEx::setMemPool(int base, int memSize) {
 void EEPROMClassEx::setMaxAllowedWrites(int allowedWrites) {
 #ifdef _EEPROMEX_DEBUG
 	_allowedWrites = allowedWrites;
+#else
+	(void)allowedWrites;
 #endif			
 }
 
@@ -331,6 +333,8 @@ bool EEPROMClassEx::isWriteOk(int address)
 	} else {
 		return true;
 	}
+#else
+	(void)address;
 #endif		
 	return true;
 }
@@ -347,6 +351,8 @@ bool EEPROMClassEx::isReadOk(int address)
 	} else {
 		return true;
 	}
+#else
+	(void)address;
 #endif
 	return true;	
 }
