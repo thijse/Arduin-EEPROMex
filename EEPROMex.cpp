@@ -146,7 +146,7 @@ uint16_t EEPROMClassEx::readInt(int address)
 uint32_t EEPROMClassEx::readLong(int address)
 {
 	if (!isReadOk(address+sizeof(uint32_t))) return 0;
-	return eeprom_read_dword((unsigned long *) address);
+	return eeprom_read_dword((uint32_t *) address);
 }
 
 /**
@@ -214,7 +214,7 @@ bool EEPROMClassEx::writeInt(int address, uint16_t value)
 bool EEPROMClassEx::writeLong(int address, uint32_t value)
 {
 	if (!isWriteOk(address+sizeof(uint32_t))) return false;
-	eeprom_write_dword((unsigned long *) address, value);
+	eeprom_write_dword((uint32_t *) address, value);
 	return true;
 }
 
