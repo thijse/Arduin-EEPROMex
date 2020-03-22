@@ -99,7 +99,11 @@ int EEPROMClassEx::getAddress(int noOfBytes){
  * Check if EEPROM memory is ready to be accessed
  */
 bool EEPROMClassEx::isReady() {
+#if defined(ARDUINO_ARCH_MEGAAVR) //work around a bug in <avr/eeprom.h>
+	return bit_is_clear(NVMCTRL.STATUS,NVMCTRL_EEBUSY_bp);
+#else
 	return eeprom_is_ready();
+#endif
 }
 
 /**
